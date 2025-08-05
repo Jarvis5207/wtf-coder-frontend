@@ -1,25 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WTF-CODER Editor</title>
-  <link rel="stylesheet" href="/assets/css/style.css">
+  <title>WTF-CODER Login</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
 </head>
 <body>
-  <div class="editor-container">
-    <div class="editor-header">
-      <h1>WTF-CODER Editor</h1>
-    </div>
-    <div class="editor-body">
-      <textarea id="htmlCode" placeholder="HTML"></textarea>
-      <textarea id="cssCode" placeholder="CSS"></textarea>
-      <textarea id="jsCode" placeholder="JavaScript"></textarea>
-    </div>
-    <div class="editor-footer">
-      <iframe id="output"></iframe>
-    </div>
+  <div class="form-container">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <input type="text" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <button type="submit">Login</button>
+    </form>
+    <p>Don't have an account? <a href="pages/signup.html">Sign Up</a></p>
   </div>
-  <script src="/assets/js/editor.js"></script>
+  <script src="assets/js/auth.js"></script>
 </body>
 </html>
