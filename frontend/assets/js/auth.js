@@ -1,40 +1,41 @@
-document.getElementById("signupForm")?.addEventListener("submit", async function (e) {
-  e.preventDefault();
-  const name = document.getElementById("name").value;
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+console.log("auth.js loaded ✅");
 
-  const res = await fetch("https://wtf-coder-backend.onrender.com/api/signup", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, email, password })
+const form = document.getElementById("loginForm");
+
+if (form) {
+  console.log("Login form found ✅");
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    console.log("Login form submitted ✅");
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    try {
+      const res = await fetch("https://wtf-coder-backend.onrender.com/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+
+      console.log("Login response:", data);
+
+      if (res.ok && data.token) {
+        localStorage.setItem("token", data.token);
+        window.location.href = "/pages/dashboard.html";
+      } else {
+        alert(data.message || "Login failed ❌");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Something went wrong while logging in.");
+    }
   });
-
-  const data = await res.json();
-  if (data.token) {
-    localStorage.setItem("token", data.token);
-    window.location.href = "/pages/dashboard.html";
-  } else {
-    alert(data.message);
-  }
-});
-
-document.getElementById("loginForm")?.addEventListener("submit", async function (e) {
-  e.preventDefault();
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  const res = await fetch("https://wtf-coder-backend.onrender.com/api/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password })
-  });
-
-  const data = await res.json();
-  if (data.token) {
-    localStorage.setItem("token", data.token);
-    window.location.href = "/pages/dashboard.html";
-  } else {
-    alert(data.message);
-  }
-});
+} else {
+  console.warn("Login form not found ❌");
+}
