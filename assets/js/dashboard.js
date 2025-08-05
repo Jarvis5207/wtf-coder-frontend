@@ -5,7 +5,7 @@ if (!token) {
 }
 
 async function fetchProjects() {
-  const res = await fetch("http://localhost:5000/api/projects", {
+  const res = await fetch("https://wtf-coder-backend.onrender.com/api/projects", {
     headers: { Authorization: `Bearer ${token}` }
   });
   const data = await res.json();
@@ -26,7 +26,7 @@ async function fetchProjects() {
 document.getElementById("createProjectForm")?.addEventListener("submit", async function (e) {
   e.preventDefault();
   const name = document.getElementById("projectName").value;
-  await fetch("http://localhost:5000/api/projects", {
+  await fetch("https://wtf-coder-backend.onrender.com/api/projects", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
