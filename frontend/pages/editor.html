@@ -1,33 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>WTF-CODER Editor</title>
-  <link rel="stylesheet" href="/assets/css/style.css" />
-  <link rel="icon" href="/assets/favicon.ico" />
+  <meta charset="UTF-8">
+  <title>Editor</title>
+  <link rel="stylesheet" href="/assets/cssstyle.css">
   <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/vs/loader.js"></script>
 </head>
 <body>
-
-<div class="editor-container">
-  <div class="sidebar">
-    <h3>Files</h3>
-    <div id="fileList">
-      <div class="file" onclick="openFile('index.html')">index.html</div>
-      <div class="file" onclick="openFile('style.css')">style.css</div>
-      <div class="file" onclick="openFile('script.js')">script.js</div>
+  <div class="editor-container">
+    <div class="tabs">
+      <button class="tab-btn active" data-lang="html">HTML</button>
+      <button class="tab-btn" data-lang="css">CSS</button>
+      <button class="tab-btn" data-lang="js">JS</button>
+      <button id="run-btn">Run</button>
+      <button id="download-btn">Download</button>
+      <input type="file" id="fileInput" style="display:none" />
+      <button id="open-btn">Open File</button>
+      <button id="logout-btn">Logout</button>
     </div>
+    <div id="editor" class="editor"></div>
+    <iframe id="output" class="output"></iframe>
   </div>
-
-  <div class="main-editor">
-    <div class="tabs" id="tabs"></div>
-    <div id="editor"></div>
-    <iframe class="preview" id="livePreview"></iframe>
-  </div>
-</div>
-
-<script src="/assets/js/editor.js"></script>
+  <script src="/assets/js/script.js"></script>
 </body>
 </html>
 
