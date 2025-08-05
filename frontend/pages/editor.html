@@ -1,21 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>WTF-CODER Editor</title>
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <link rel="icon" href="/assets/favicon.ico" />
   <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/vs/loader.js"></script>
-  <link rel="stylesheet" href="/assets/css/style.css">
-  <link rel="icon" href="/assets/favicon.ico" type="image/x-icon">
 </head>
 <body>
-  <div class="editor-container">
-    <div class="sidebar">
-      <h3>Explorer</h3>
-      <ul id="fileTree"></ul>
-      <button onclick="createFile()">+ File</button>
-      <button onclick="createFolder()">+ Folder</button>
+
+<div class="editor-container">
+  <div class="sidebar">
+    <h3>Files</h3>
+    <div id="fileList">
+      <div class="file" onclick="openFile('index.html')">index.html</div>
+      <div class="file" onclick="openFile('style.css')">style.css</div>
+      <div class="file" onclick="openFile('script.js')">script.js</div>
     </div>
-    <div id="editor" class="editor-area"></div>
   </div>
-  <script src="/assets/js/editor.js"></script>
+
+  <div class="main-editor">
+    <div class="tabs" id="tabs"></div>
+    <div id="editor"></div>
+    <iframe class="preview" id="livePreview"></iframe>
+  </div>
+</div>
+
+<script src="/assets/js/editor.js"></script>
 </body>
 </html>
+
