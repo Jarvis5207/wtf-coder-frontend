@@ -1,7 +1,7 @@
 const token = localStorage.getItem("token");
 if (!token) {
   alert("Not logged in!");
-  window.location.href = "index.html";
+  window.location.href = "/index.html";
 }
 
 async function fetchProjects() {
@@ -17,7 +17,7 @@ async function fetchProjects() {
     li.style.cursor = "pointer";
     li.onclick = () => {
       localStorage.setItem("projectId", project._id);
-      window.location.href = "editor.html";
+      window.location.href = "/pages/editor.html";
     };
     list.appendChild(li);
   });
