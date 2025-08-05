@@ -15,7 +15,7 @@ document.getElementById("signupForm")?.addEventListener("submit", async function
     const data = await res.json();
     if (data.token) {
       localStorage.setItem("token", data.token);
-      window.location.href = "/pages/dashboard.html"; // ✅ Redirect to dashboard
+      window.location.href = "/pages/editor.html"; // ✅ Redirect to dashboard
     } else {
       alert(data.message);
     }
@@ -41,7 +41,7 @@ document.getElementById("loginForm")?.addEventListener("submit", async function 
     const data = await res.json();
     if (data.token) {
       localStorage.setItem("token", data.token);
-      window.location.href = "/pages/dashboard.html"; // ✅ Redirect to dashboard
+      window.location.href = "/pages/editor.html"; // ✅ Redirect to dashboard
     } else {
       alert(data.message);
     }
