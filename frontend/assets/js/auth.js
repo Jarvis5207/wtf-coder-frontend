@@ -33,7 +33,7 @@ document.getElementById("loginForm")?.addEventListener("submit", async function 
   const data = await res.json();
   if (data.token) {
     localStorage.setItem("token", data.token);
-    window.location.href = "dashboard.html";
+    window.location.href = "../../pages/dashboard.html";
   } else {
     alert(data.message);
   }
