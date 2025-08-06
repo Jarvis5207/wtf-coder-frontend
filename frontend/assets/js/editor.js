@@ -1,12 +1,25 @@
 
 if (location.pathname.endsWith("editor.html")) {
-  require.config({ paths: { vs: "https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/vs" }});
-  require(["vs/editor/editor.main"], () => {
-    const editors = {
-      html: monaco.editor.create(document.getElementById("editor"), {
-        value: "<!-- HTML -->",
-        language: "html", theme: "vs-dark"
-      })
+  getWorkerUrl: function (moduleId, label) {
+      return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
+        self.MonacoEnvironment = { baseUrl: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/' };
+        importScripts('https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/vs/base/worker/workerMain.js');`
+      )}`;
+    }
+  };
+  require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/vs' } });
+require(['vs/editor/editor.main'], function () {
+  monaco.editor.create(document.getElementById('container'), {
+    value: '',
+    language: 'html',
+    theme: 'vs-dark',
+    experimental: {
+      domReadOnly: false,
+      useTouchEvents: true
+    }
+  });
+});
+
     };
     let current = "html";
     document.querySelectorAll(".tab-btn").forEach(btn => {
