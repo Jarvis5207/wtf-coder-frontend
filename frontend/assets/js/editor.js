@@ -1,91 +1,98 @@
-// Enable Monaco environment for workers
-window.MonacoEnvironment = {
-  getWorkerUrl: function (moduleId, label) {
-    return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
-      self.MonacoEnvironment = {
-        baseUrl: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/'
-      };
-      importScripts('https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/vs/base/worker/workerMain.js');`
-    )}`;
-  }
+// Enable Monaco Editor loader
+require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/vs' } });
+
+let editor;
+let currentLang = "html";
+const defaultContent = {
+  html: '<!-- HTML -->\n<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <title>Document</title>\n</head>\n<body>\n  \n</body>\n</html>',
+  css: '/* CSS */\nbody {\n  font-family: Arial;\n}',
+  js: '// JavaScript\nconsole.log("Hello, world!");'
 };
 
-// Load Monaco Editor
-require.config({ paths: { vs: "https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/vs" } });
-
 require(["vs/editor/editor.main"], function () {
-  monaco.editor.create(document.getElementById("container"), {
-    value: `<!-- Start typing HTML here -->\n\n<html>\n  <head>\n    <title>My Page</title>\n  </head>\n  <body>\n    <h1>Hello, World!</h1>\n  </body>\n</html>`,
-    language: "html",
+  editor = monaco.editor.create(document.getElementById("editor"), {
+    value: defaultContent[currentLang],
+    language: currentLang,
     theme: "vs-dark",
-    fontSize: 16,
-    scrollBeyondLastLine: false,
-    automaticLayout: true,
-    wordWrap: "on",
+    automaticLayout: true
+  });
 
-    // ✅ Enable touch support
-    experimental: {
-      domReadOnly: false,
-      useTouchEvents: true
-    }
+  // Touch support fix
+  editor.updateOptions({ accessibilitySupport: "on" });
+});
+
+// Tab Switching
+const tabButtons = document.querySelectorAll(".tab-btn");
+tabButtons.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    tabButtons.forEach((b) => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentLang = btn.dataset.lang;
+    const value = editor.getValue();
+    defaultContent[currentLang] = value;
+    editor.setValue(defaultContent[currentLang]);
+    monaco.editor.setModelLanguage(editor.getModel(), currentLang);
   });
 });
 
+// Run Button
+const runBtn = document.getElementById("run-btn");
+runBtn.addEventListener("click", () => {
+  const html = defaultContent.html;
+  const css = `<style>${defaultContent.css}</style>`;
+  const js = `<script>${defaultContent.js}<\/script>`;
+  const result = html.replace('</head>', `${css}</head>`).replace('</body>', `${js}</body>`);
+  const output = document.getElementById("output");
+  output.srcdoc = result;
+});
 
-    };
-    let current = "html";
-    document.querySelectorAll(".tab-btn").forEach(btn => {
-      const lang = btn.dataset.lang;
-      if (lang !== "html") {
-        editors[lang] = monaco.editor.create(document.getElementById("editor"), {
-          value: `/* ${lang} */`, language: lang, theme: "vs-dark"
-        });
-        editors[lang].getDomNode().style.display = "none";
+// Download Button
+const downloadBtn = document.getElementById("download-btn");
+downloadBtn.addEventListener("click", () => {
+  const content = {
+    html: defaultContent.html,
+    css: defaultContent.css,
+    js: defaultContent.js
+  };
+  const blob = new Blob([JSON.stringify(content, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "code-snippet.json";
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+// Open File Button
+const fileInput = document.getElementById("fileInput");
+const openBtn = document.getElementById("open-btn");
+openBtn.addEventListener("click", () => fileInput.click());
+
+fileInput.addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    try {
+      const content = JSON.parse(event.target.result);
+      if (content.html && content.css && content.js) {
+        defaultContent.html = content.html;
+        defaultContent.css = content.css;
+        defaultContent.js = content.js;
+        editor.setValue(defaultContent[currentLang]);
+        monaco.editor.setModelLanguage(editor.getModel(), currentLang);
+      } else {
+        alert("Invalid file format.");
       }
-      btn.addEventListener("click", () => {
-        editors[current].getDomNode().style.display = "none";
-        btn.parentNode.querySelector(".active").classList.remove("active");
-        btn.classList.add("active");
-        editors[lang].getDomNode().style.display = "block";
-        current = lang;
-      });
-    });
-    document.getElementById("feedback-btn").addEventListener("click", () => {
-      window.location.href = "feedback.html";
-    });
-    document.getElementById("run-btn").onclick = () => {
-      const html = editors.html.getValue();
-      const css = editors.css.getValue();
-      const js = editors.js.getValue();
-      const src = `<!DOCTYPE html><html><head><style>${css}</style></head><body>${html}<script>${js}<\/script></body></html>`;
-      document.getElementById("output").srcdoc = src;
-    };
+    } catch (err) {
+      alert("Error reading file.");
+    }
+  };
+  reader.readAsText(file);
+});
 
-    document.getElementById("download-btn").onclick = () => {
-      const blob = new Blob([editors[current].getValue()], { type: "text/plain" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = current + ".txt";
-      a.click();
-    };
+// Feedback Button
+const feedbackBtn = document.getElementById("feedback-btn");
+feedbackBtn.addEventListener("click", () => {
+  window.location.href = "/pages/feedback.html";
+});
 
-    document.getElementById("open-btn").onclick = () => {
-      document.getElementById("fileInput").click();
-    };
-
-    document.getElementById("fileInput").addEventListener("change", e => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          editors[current].setValue(reader.result);
-        };
-        reader.readAsText(file);
-      }
-    });
-
-    document.getElementById("logout-btn").onclick = () => {
-      location.href = "login.html";
-    };
-  });
-}
