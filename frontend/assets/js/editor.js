@@ -25,7 +25,9 @@ if (location.pathname.endsWith("editor.html")) {
         current = lang;
       });
     });
-
+    document.getElementById("feedback-btn").addEventListener("click", () => {
+      window.location.href = "feedback.html";
+    });
     document.getElementById("run-btn").onclick = () => {
       const html = editors.html.getValue();
       const css = editors.css.getValue();
