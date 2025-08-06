@@ -1,102 +1,91 @@
-require.config({ paths: { vs: "https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/vs" }});
+let editor;
+let currentLang = 'html';
+let code = {
+  html: "<!-- Start coding HTML here -->",
+  css: "/* CSS styling */",
+  js: "// JavaScript code"
+};
+
+// Monaco Editor Config
+require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/vs' } });
+
 require(["vs/editor/editor.main"], () => {
-  const editorContainer = document.getElementById("editor");
+  editor = monaco.editor.create(document.getElementById("editor"), {
+    value: code[currentLang],
+    language: currentLang,
+    theme: "vs-dark",
+    automaticLayout: true,
+    accessibilitySupport: "on"
+  });
 
-  const editors = {
-    html: monaco.editor.create(editorContainer, {
-      value: "<!-- Write your HTML here -->",
-      language: "html",
-      theme: "vs-dark"
-    }),
-    css: monaco.editor.create(editorContainer, {
-      value: "/* Write your CSS here */",
-      language: "css",
-      theme: "vs-dark"
-    }),
-    js: monaco.editor.create(editorContainer, {
-      value: "// Write your JavaScript here",
-      language: "javascript",
-      theme: "vs-dark"
-    })
+  // Partial touch fix (for mobile/Android)
+  editor.updateOptions({
+    mouseWheelZoom: true,
+    fontSize: 16
+  });
+});
+
+// Switch Tabs (HTML / CSS / JS)
+function switchTab(lang) {
+  code[currentLang] = editor.getValue();
+  currentLang = lang;
+  editor.setValue(code[lang]);
+  monaco.editor.setModelLanguage(editor.getModel(), lang);
+  document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+  document.querySelector(`.tab-btn[data-lang="${lang}"]`).classList.add("active");
+}
+
+// Tab button event
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => switchTab(btn.dataset.lang));
+});
+
+// Run Button
+document.getElementById("run-btn").addEventListener("click", () => {
+  code[currentLang] = editor.getValue();
+  const output = `
+    <html>
+      <head><style>${code.css}</style></head>
+      <body>
+        ${code.html}
+        <script>${code.js}<\/script>
+      </body>
+    </html>`;
+  document.getElementById("output").srcdoc = output;
+});
+
+// Download Button
+document.getElementById("download-btn").addEventListener("click", () => {
+  code[currentLang] = editor.getValue();
+  const blob = new Blob([code.html], { type: "text/html" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "code.html";
+  link.click();
+});
+
+// Open File Button
+document.getElementById("open-btn").addEventListener("click", () => {
+  const fileInput = document.getElementById("fileInput");
+  fileInput.click();
+  fileInput.onchange = () => {
+    const reader = new FileReader();
+    reader.onload = e => editor.setValue(e.target.result);
+    reader.readAsText(fileInput.files[0]);
   };
+});
 
-  let current = "html";
-  editors.css.getDomNode().style.display = "none";
-  editors.js.getDomNode().style.display = "none";
-
-  // Tab Switch
-  document.querySelectorAll(".tab-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const lang = btn.dataset.lang;
-      if (!lang || lang === current) return;
-
-      editors[current].getDomNode().style.display = "none";
-      editors[lang].getDomNode().style.display = "block";
-
-      document.querySelector(".tab-btn.active")?.classList.remove("active");
-      btn.classList.add("active");
-      current = lang;
-    });
-  });
-
-  // Run Output
-  document.getElementById("run-btn").addEventListener("click", () => {
-    const html = editors.html.getValue();
-    const css = editors.css.getValue();
-    const js = editors.js.getValue();
-
-    const output = `
-      <!DOCTYPE html>
-      <html>
-        <head><style>${css}</style></head>
-        <body>${html}<script>${js}<\/script></body>
-      </html>
-    `;
-    document.getElementById("output").srcdoc = output;
-  });
-
-  // Download Current Code
-  document.getElementById("download-btn").addEventListener("click", () => {
-    const blob = new Blob([editors[current].getValue()], { type: "text/plain" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `${current}.txt`;
-    a.click();
-  });
-
-  // Open File
-  document.getElementById("open-btn").addEventListener("click", () => {
-    document.getElementById("fileInput").click();
-  });
-
-  document.getElementById("fileInput").addEventListener("change", e => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        editors[current].setValue(reader.result);
-      };
-      reader.readAsText(file);
-    }
-  });
-
-  // Feedback Button
-  document.getElementById("feedback-btn").addEventListener("click", () => {
-    const feedback = prompt("Please enter your feedback:");
-    if (!feedback) return;
-
+// ✅ Feedback Button
+document.getElementById("feedback-btn").addEventListener("click", () => {
+  const feedback = prompt("Enter your feedback:");
+  if (feedback) {
     fetch("/api/feedback", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ feedback })
+      body: JSON.stringify({ message: feedback })
     })
-    .then(res => {
-      if (res.ok) {
-        alert("✅ Thank you for your feedback!");
-      } else {
-        alert("❌ Failed to submit feedback.");
-      }
-    })
-    .catch(() => alert("❌ Error sending feedback."));
-  });
+    .then(res => res.ok ? alert("Thanks for your feedback!") : alert("Failed to send feedback."))
+    .catch(err => alert("Error: " + err));
+  }
 });
+
