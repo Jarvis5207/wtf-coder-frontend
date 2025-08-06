@@ -21,15 +21,18 @@ require(["vs/editor/editor.main"], function () {
   editor.updateOptions({ accessibilitySupport: "on" });
 });
 
-// Tab Switching
-const tabButtons = document.querySelectorAll(".tab-btn");
+// Tab Switching (FIXED)
 tabButtons.forEach((btn) => {
   btn.addEventListener("click", () => {
+    // Save current content before switching
+    defaultContent[currentLang] = editor.getValue();
+
+    // Now switch tab
+    currentLang = btn.dataset.lang;
     tabButtons.forEach((b) => b.classList.remove("active"));
     btn.classList.add("active");
-    currentLang = btn.dataset.lang;
-    const value = editor.getValue();
-    defaultContent[currentLang] = value;
+
+    // Set new content
     editor.setValue(defaultContent[currentLang]);
     monaco.editor.setModelLanguage(editor.getModel(), currentLang);
   });
