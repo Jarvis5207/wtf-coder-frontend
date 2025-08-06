@@ -7,7 +7,7 @@ document.getElementById("signupForm")?.addEventListener("submit", async function
   const password = document.getElementById("password").value;
 
   try {
-    const res = await fetch("https://wtf-coder-backend.onrender.com/api/signup", {
+    const res = await fetch("https://wtf-coder-backend-production.up.railway.app/api/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, password })
@@ -34,7 +34,7 @@ document.getElementById("loginForm")?.addEventListener("submit", async function 
   const password = document.getElementById("password").value;
 
   try {
-    const res = await fetch("https://wtf-coder-backend.onrender.com/api/login", {
+    const res = await fetch("https://wtf-coder-backend-production.up.railway.app/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
