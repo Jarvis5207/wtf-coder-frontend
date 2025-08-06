@@ -1,18 +1,36 @@
+// Enable Monaco environment for workers
+window.MonacoEnvironment = {
+  getWorkerUrl: function (moduleId, label) {
+    return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
+      self.MonacoEnvironment = {
+        baseUrl: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/'
+      };
+      importScripts('https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/vs/base/worker/workerMain.js');`
+    )}`;
+  }
+};
 
-if (location.pathname.endsWith("editor.html")) {
+// Load Monaco Editor
+require.config({ paths: { vs: "https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/vs" } });
 
-  require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/vs' } });
-require(['vs/editor/editor.main'], function () {
-  monaco.editor.create(document.getElementById('container'), {
-    value: '<!-- HTML -->',
-    language: 'html',
-    theme: 'vs-dark',
+require(["vs/editor/editor.main"], function () {
+  monaco.editor.create(document.getElementById("container"), {
+    value: `<!-- Start typing HTML here -->\n\n<html>\n  <head>\n    <title>My Page</title>\n  </head>\n  <body>\n    <h1>Hello, World!</h1>\n  </body>\n</html>`,
+    language: "html",
+    theme: "vs-dark",
+    fontSize: 16,
+    scrollBeyondLastLine: false,
+    automaticLayout: true,
+    wordWrap: "on",
+
+    // ✅ Enable touch support
     experimental: {
       domReadOnly: false,
       useTouchEvents: true
     }
   });
 });
+
 
     };
     let current = "html";
