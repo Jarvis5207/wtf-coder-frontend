@@ -21,6 +21,7 @@ body {
 .tabs {
   background: #20232a; padding: 10px;
 }
+
 .tab-btn, #run-btn, #logout-btn, #download-btn, #open-btn {
   margin-right: 8px; padding: 6px 12px;
   background: #61dafb; border: none; color: #000;
@@ -29,3 +30,13 @@ body {
 .tab-btn.active { background: #21a1f1; color: #fff; }
 .editor { flex: 1; }
 .output { flex: 1; border: none; width: 100%; background: #fff; }
+
+#feedback-btn { /* Added feedback button */
+  margin-right: 8px;
+  padding: 6px 12px;
+  background: #61dafb;
+  border: none;
+  color: #000;
+  border-radius: 4px;
+  cursor: pointer;
+}
