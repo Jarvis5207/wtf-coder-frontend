@@ -1,6 +1,7 @@
 // Signup
 document.getElementById("signupForm")?.addEventListener("submit", async function (e) {
   e.preventDefault();
+  document.querySelector("#signupForm button[type='submit']").innerText = "Signing up...";
   const name = document.getElementById("name").value;
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
@@ -28,6 +29,7 @@ document.getElementById("signupForm")?.addEventListener("submit", async function
 // Login
 document.getElementById("loginForm")?.addEventListener("submit", async function (e) {
   e.preventDefault();
+  document.querySelector("#loginForm button[type='submit']").innerText = "Logging in...";
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
