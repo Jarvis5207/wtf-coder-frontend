@@ -11,7 +11,7 @@ document.getElementById("feedbackForm").addEventListener("submit", async functio
   }
 
   try {
-    const res = await fetch("https://wtf-coder-backend.onrender.com/api/feedback", {
+    const res = await fetch("https://wtf-coder-backend-production.up.railway.app/api/feedback", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
