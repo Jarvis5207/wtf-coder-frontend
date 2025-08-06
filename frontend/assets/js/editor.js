@@ -75,17 +75,10 @@ document.getElementById("open-btn").addEventListener("click", () => {
   };
 });
 
-// ✅ Feedback Button
-document.getElementById("feedback-btn").addEventListener("click", () => {
-  const feedback = prompt("Enter your feedback:");
-  if (feedback) {
-    fetch("/api/feedback", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: feedback })
-    })
-    .then(res => res.ok ? alert("Thanks for your feedback!") : alert("Failed to send feedback."))
-    .catch(err => alert("Error: " + err));
-  }
+// Feedback Button
+const feedbackBtn = document.getElementById("feedback-btn");
+feedbackBtn.addEventListener("click", () => {
+  window.location.href = "/pages/feedback.html";
 });
+
 
