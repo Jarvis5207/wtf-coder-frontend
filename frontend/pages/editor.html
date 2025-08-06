@@ -16,11 +16,18 @@
       <button id="download-btn">Download</button>
       <input type="file" id="fileInput" style="display:none" />
       <button id="open-btn">Open File</button>
+      <button id="feedback-btn">Feedback</button>
     </div>
     <div id="editor" class="editor"></div>
     <iframe id="output" class="output"></iframe>
   </div>
   <script src="/assets/js/editor.js"></script>
+  <script>
+    // Feedback button click redirect
+    document.getElementById("feedback-btn").addEventListener("click", () => {
+      window.location.href = "feedback.html";
+    });
+  </script>
 </body>
 </html>
 
