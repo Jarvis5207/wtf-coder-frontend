@@ -1,13 +1,6 @@
 
 if (location.pathname.endsWith("editor.html")) {
-  window.MonacoEnvironment = {
-    getWorkerUrl: function (moduleId, label) {
-      return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
-        self.MonacoEnvironment = { baseUrl: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/' };
-        importScripts('https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/vs/base/worker/workerMain.js');`
-      )}`;
-    }
-  };
+
   require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.43.0/min/vs' } });
 require(['vs/editor/editor.main'], function () {
   monaco.editor.create(document.getElementById('container'), {
